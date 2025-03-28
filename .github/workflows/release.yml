@@ -8,7 +8,8 @@ on:
 env:
   AWS_REGION: eu-west-1
   S3_BUCKET: my-glue-script-bucket-demo-1234563213213213213
-  SCRIPT_FILE: /scripts/glue_script.py
+  SCRIPT_FILE: glue/scripts/glue_script.py
+
 
 jobs:
   deploy:
