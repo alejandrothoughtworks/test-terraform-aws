@@ -37,6 +37,7 @@ resource "aws_iam_role_policy_attachment" "glue_policy" {
 resource "aws_glue_job" "example" {
   name     = "basic-glue-job"
   role_arn = aws_iam_role.glue_role.arn
+
   command {
     name            = "glueetl"
     script_location = "s3://${aws_s3_bucket.glue_bucket.bucket}/scripts/glue_script.py"

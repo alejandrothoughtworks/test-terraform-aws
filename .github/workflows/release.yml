@@ -1,17 +1,34 @@
-name: Create Release from Tag
+name: Release and Deploy Glue Job
 
 on:
   push:
     tags:
-      - 'v*'  
+      - 'v*' 
+
+env:
+  AWS_REGION: eu-west-1
+  S3_BUCKET: my-glue-script-bucket-demo-1234563213213213213
+  SCRIPT_FILE: scripts/glue_script.py
 
 jobs:
-  release:
+  deploy:
+    name: Deploy Glue Job for ${{ github.ref_name }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload Glue script to S3
+        run: |
+            aws s3 cp $SCRIPT_FILE s3://$S3_BUCKET/scripts/glue_script.py
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -19,6 +36,6 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
-            New release created from tag **${{ github.ref_name }}**
+             Release created from tag **${{ github.ref_name }}**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
